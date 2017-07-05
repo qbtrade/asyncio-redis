@@ -18,28 +18,28 @@ from inspect import getfullargspec, formatargspec, getcallargs
 
 from .encoders import BaseEncoder, UTF8Encoder
 from .exceptions import (
-        ConnectionLostError,
-        Error,
-        ErrorReply,
-        NoRunningScriptError,
-        NotConnectedError,
-        ScriptKilledError,
-        TimeoutError,
-        TransactionError,
+    ConnectionLostError,
+    Error,
+    ErrorReply,
+    NoRunningScriptError,
+    NotConnectedError,
+    ScriptKilledError,
+    TimeoutError,
+    TransactionError,
 )
 from .log import logger
 from .replies import (
-        BlockingPopReply,
-        ClientListReply,
-        ConfigPairReply,
-        DictReply,
-        EvalScriptReply,
-        InfoReply,
-        ListReply,
-        PubSubReply,
-        SetReply,
-        StatusReply,
-        ZRangeReply,
+    BlockingPopReply,
+    ClientListReply,
+    ConfigPairReply,
+    DictReply,
+    EvalScriptReply,
+    InfoReply,
+    ListReply,
+    PubSubReply,
+    SetReply,
+    StatusReply,
+    ZRangeReply,
 )
 
 
@@ -90,7 +90,7 @@ class ZScoreBoundary:
 
     def __repr__(self):
         return 'ZScoreBoundary(value=%r, exclude_boundary=%r)' % (
-                    self.value, self.exclude_boundary)
+            self.value, self.exclude_boundary)
 
 ZScoreBoundary.MIN_VALUE = ZScoreBoundary('-inf')
 ZScoreBoundary.MAX_VALUE = ZScoreBoundary('+inf')
@@ -245,31 +245,31 @@ class PostProcessors:
     def get_default(cls, return_type):
         """ Give post processor function for return type. """
         return {
-                ListReply: cls.multibulk_as_list,
-                SetReply: cls.multibulk_as_set,
-                DictReply: cls.multibulk_as_dict,
+            ListReply: cls.multibulk_as_list,
+            SetReply: cls.multibulk_as_set,
+            DictReply: cls.multibulk_as_dict,
 
-                float: cls.bytes_to_float,
-                (float, NoneType): cls.bytes_to_float_or_none,
-                NativeType: cls.bytes_to_native,
-                (NativeType, NoneType): cls.bytes_to_native_or_none,
-                InfoReply: cls.bytes_to_info,
-                ClientListReply: cls.bytes_to_clientlist,
-                str: cls.bytes_to_str,
-                bool: cls.int_to_bool,
-                BlockingPopReply: cls.multibulk_as_blocking_pop_reply,
-                ZRangeReply: cls.multibulk_as_zrangereply,
+            float: cls.bytes_to_float,
+            (float, NoneType): cls.bytes_to_float_or_none,
+            NativeType: cls.bytes_to_native,
+            (NativeType, NoneType): cls.bytes_to_native_or_none,
+            InfoReply: cls.bytes_to_info,
+            ClientListReply: cls.bytes_to_clientlist,
+            str: cls.bytes_to_str,
+            bool: cls.int_to_bool,
+            BlockingPopReply: cls.multibulk_as_blocking_pop_reply,
+            ZRangeReply: cls.multibulk_as_zrangereply,
 
-                StatusReply: cls.bytes_to_status_reply,
-                (StatusReply, NoneType): cls.bytes_to_status_reply_or_none,
-                int: None,
-                (int, NoneType): None,
-                ConfigPairReply: cls.multibulk_as_configpair,
-                ListOf(bool): cls.multibulk_as_boolean_list,
-                _ScanPart: cls.multibulk_as_scanpart,
-                EvalScriptReply: cls.any_to_evalscript,
+            StatusReply: cls.bytes_to_status_reply,
+            (StatusReply, NoneType): cls.bytes_to_status_reply_or_none,
+            int: None,
+            (int, NoneType): None,
+            ConfigPairReply: cls.multibulk_as_configpair,
+            ListOf(bool): cls.multibulk_as_boolean_list,
+            _ScanPart: cls.multibulk_as_scanpart,
+            EvalScriptReply: cls.any_to_evalscript,
 
-                NoneType: None,
+            NoneType: None,
         }[return_type]
 
     @classmethod
@@ -464,8 +464,8 @@ class CommandCreator:
 
     @property
     def specs(self):
-       """ Argspecs """
-       return getfullargspec(self.method)
+        """ Argspecs """
+        return getfullargspec(self.method)
 
     @property
     def return_type(self):
@@ -606,11 +606,11 @@ class CommandCreator:
         returns = ':returns: (Future of) %s\n' % get_name(return_type) if return_type else ''
 
         return '%s%s\n%s\n\n%s%s' % (
-                self.method.__name__ + suffix, signature,
-                self.method.__doc__,
-                ''.join(params_str),
-                returns
-                )
+            self.method.__name__ + suffix, signature,
+            self.method.__doc__,
+            ''.join(params_str),
+            returns
+        )
 
     def get_methods(self):
         """
@@ -984,10 +984,10 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
 
     @asyncio.coroutine
     def _handle_multi_bulk_reply(self, cb):
-                # NOTE: the reason for passing the callback `cb` in here is
-                #       mainly because we want to return the result object
-                #       especially in this case before the input is read
-                #       completely. This allows a streaming API.
+        # NOTE: the reason for passing the callback `cb` in here is
+        #       mainly because we want to return the result object
+        #       especially in this case before the input is read
+        #       completely. This allows a streaming API.
         count = int((yield from self._reader.readline()).rstrip(b'\r\n'))
 
         # Handle multi-bulk none.
@@ -1012,7 +1012,7 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
     def _handle_pubsub_multibulk_reply(self, multibulk_reply):
         # Read first item of the multi bulk reply raw.
         type = yield from multibulk_reply._read(decode=False, _one=True)
-        assert type in (b'message', b'subscribe', b'unsubscribe', b'pmessage', b'psubscribe', b'punsubscribe')
+        assert type in (b'message', b'subscribe', b'unsubscribe', b'pmessage', b'psubscribe', b'punsubscribe', b'pong')
 
         if type == b'message':
             channel, value = yield from multibulk_reply._read(count=2)
@@ -1022,8 +1022,10 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
             pattern, channel, value = yield from multibulk_reply._read(count=3)
             yield from self._subscription._messages_queue.put(PubSubReply(channel, value, pattern=pattern))
 
-        # We can safely ignore 'subscribe'/'unsubscribe' replies at this point,
-        # they don't contain anything really useful.
+        elif type == b'pong':
+            logger.debug('pong')
+            # We can safely ignore 'subscribe'/'unsubscribe' replies at this point,
+            # they don't contain anything really useful.
 
     # Redis operations.
 
@@ -1199,7 +1201,7 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
     def setex(self, tr, key:NativeType, seconds:int, value:NativeType) -> StatusReply:
         """ Set the string value of a key with expire """
         return self._query(tr, b'setex', self.encode_from_native(key),
-                self._encode_int(seconds), self.encode_from_native(value))
+                           self._encode_int(seconds), self.encode_from_native(value))
 
     @_query_command
     def setnx(self, tr, key:NativeType, value:NativeType) -> bool:
@@ -1321,7 +1323,7 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
     def setbit(self, tr, key:NativeType, offset:int, value:bool) -> bool:
         """ Sets or clears the bit at offset in the string value stored at key """
         return self._query(tr, b'setbit', self.encode_from_native(key), self._encode_int(offset),
-                self._encode_int(int(value)))
+                           self._encode_int(int(value)))
 
     # Keys
 
@@ -1334,11 +1336,11 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
         """
         return self._query(tr, b'keys', self.encode_from_native(pattern))
 
-#    @_query_command
-#    def dump(self, key:NativeType):
-#        """ Return a serialized version of the value stored at the specified key. """
-#        # Dump does not work yet. It shouldn't be decoded using utf-8'
-#        raise NotImplementedError('Not supported.')
+    #    @_query_command
+    #    def dump(self, key:NativeType):
+    #        """ Return a serialized version of the value stored at the specified key. """
+    #        # Dump does not work yet. It shouldn't be decoded using utf-8'
+    #        raise NotImplementedError('Not supported.')
 
     @_query_command
     def expire(self, tr, key:NativeType, seconds:int) -> int:
@@ -1432,7 +1434,7 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
     def sdiffstore(self, tr, destination:NativeType, keys:ListOf(NativeType)) -> int:
         """ Subtract multiple sets and store the resulting set in a key """
         return self._query(tr, b'sdiffstore', self.encode_from_native(destination),
-                *map(self.encode_from_native, keys))
+                           *map(self.encode_from_native, keys))
 
     @_query_command
     def sunion(self, tr, keys:ListOf(NativeType)) -> SetReply:
@@ -1533,7 +1535,7 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
     def brpoplpush(self, tr, source:NativeType, destination:NativeType, timeout:int=0) -> NativeType:
         """ Pop a value from a list, push it to another list and return it; or block until one is available """
         result = yield from self._query(tr, b'brpoplpush', self.encode_from_native(source), self.encode_from_native(destination),
-                    self._encode_int(timeout), set_blocking=True)
+                                        self._encode_int(timeout), set_blocking=True)
 
         if result is None:
             raise TimeoutError('Timeout in brpoplpush')
@@ -1550,7 +1552,7 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
     def linsert(self, tr, key:NativeType, pivot:NativeType, value:NativeType, before=False) -> int:
         """ Insert an element before or after another element in a list """
         return self._query(tr, b'linsert', self.encode_from_native(key), (b'BEFORE' if before else b'AFTER'),
-                self.encode_from_native(pivot), self.encode_from_native(value))
+                           self.encode_from_native(pivot), self.encode_from_native(value))
 
     # Sorted Sets
 
@@ -1594,7 +1596,7 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
             my_dict = yield result.aslist()
         """
         return self._query(tr, b'zrange', self.encode_from_native(key),
-                    self._encode_int(start), self._encode_int(stop), b'withscores')
+                           self._encode_int(start), self._encode_int(stop), b'withscores')
 
     @_query_command
     def zrevrange(self, tr, key:NativeType, start:int=0, stop:int=-1) -> ZRangeReply:
@@ -1617,49 +1619,49 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
 
         """
         return self._query(tr, b'zrevrange', self.encode_from_native(key),
-                    self._encode_int(start), self._encode_int(stop), b'withscores')
+                           self._encode_int(start), self._encode_int(stop), b'withscores')
 
     @_query_command
     def zrangebyscore(self, tr, key:NativeType,
-                min:ZScoreBoundary=ZScoreBoundary.MIN_VALUE,
-                max:ZScoreBoundary=ZScoreBoundary.MAX_VALUE,
-                offset:int=0, limit:int=-1) -> ZRangeReply:
+                      min:ZScoreBoundary=ZScoreBoundary.MIN_VALUE,
+                      max:ZScoreBoundary=ZScoreBoundary.MAX_VALUE,
+                      offset:int=0, limit:int=-1) -> ZRangeReply:
         """ Return a range of members in a sorted set, by score """
         return self._query(tr, b'zrangebyscore', self.encode_from_native(key),
-                    self._encode_zscore_boundary(min), self._encode_zscore_boundary(max),
-                    b'limit', self._encode_int(offset), self._encode_int(limit),
-                    b'withscores')
+                           self._encode_zscore_boundary(min), self._encode_zscore_boundary(max),
+                           b'limit', self._encode_int(offset), self._encode_int(limit),
+                           b'withscores')
 
     @_query_command
     def zrevrangebyscore(self, tr, key:NativeType,
-                max:ZScoreBoundary=ZScoreBoundary.MAX_VALUE,
-                min:ZScoreBoundary=ZScoreBoundary.MIN_VALUE,
-                offset:int=0, limit:int=-1) -> ZRangeReply:
+                         max:ZScoreBoundary=ZScoreBoundary.MAX_VALUE,
+                         min:ZScoreBoundary=ZScoreBoundary.MIN_VALUE,
+                         offset:int=0, limit:int=-1) -> ZRangeReply:
         """ Return a range of members in a sorted set, by score, with scores ordered from high to low """
         return self._query(tr, b'zrevrangebyscore', self.encode_from_native(key),
-                    self._encode_zscore_boundary(max), self._encode_zscore_boundary(min),
-                    b'limit', self._encode_int(offset), self._encode_int(limit),
-                    b'withscores')
+                           self._encode_zscore_boundary(max), self._encode_zscore_boundary(min),
+                           b'limit', self._encode_int(offset), self._encode_int(limit),
+                           b'withscores')
 
     @_query_command
     def zremrangebyscore(self, tr, key:NativeType,
-                min:ZScoreBoundary=ZScoreBoundary.MIN_VALUE,
-                max:ZScoreBoundary=ZScoreBoundary.MAX_VALUE) -> int:
+                         min:ZScoreBoundary=ZScoreBoundary.MIN_VALUE,
+                         max:ZScoreBoundary=ZScoreBoundary.MAX_VALUE) -> int:
         """ Remove all members in a sorted set within the given scores """
         return self._query(tr, b'zremrangebyscore', self.encode_from_native(key),
-                    self._encode_zscore_boundary(min), self._encode_zscore_boundary(max))
+                           self._encode_zscore_boundary(min), self._encode_zscore_boundary(max))
 
     @_query_command
     def zremrangebyrank(self, tr, key:NativeType, min:int=0, max:int=-1) -> int:
         """ Remove all members in a sorted set within the given indexes """
         return self._query(tr, b'zremrangebyrank', self.encode_from_native(key),
-                    self._encode_int(min), self._encode_int(max))
+                           self._encode_int(min), self._encode_int(max))
 
     @_query_command
     def zcount(self, tr, key:NativeType, min:ZScoreBoundary, max:ZScoreBoundary) -> int:
         """ Count the members in a sorted set with scores within the given values """
         return self._query(tr, b'zcount', self.encode_from_native(key),
-                    self._encode_zscore_boundary(min), self._encode_zscore_boundary(max))
+                           self._encode_zscore_boundary(min), self._encode_zscore_boundary(max))
 
     @_query_command
     def zscore(self, tr, key:NativeType, member:NativeType) -> (float, NoneType):
@@ -1668,13 +1670,13 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
 
     @_query_command
     def zunionstore(self, tr, destination:NativeType, keys:ListOf(NativeType), weights:(NoneType,ListOf(float))=None,
-                                    aggregate=ZAggregate.SUM) -> int:
+                    aggregate=ZAggregate.SUM) -> int:
         """ Add multiple sorted sets and store the resulting sorted set in a new key """
         return self._zstore(tr, b'zunionstore', destination, keys, weights, aggregate)
 
     @_query_command
     def zinterstore(self, tr, destination:NativeType, keys:ListOf(NativeType), weights:(NoneType,ListOf(float))=None,
-                                    aggregate=ZAggregate.SUM) -> int:
+                    aggregate=ZAggregate.SUM) -> int:
         """ Intersect multiple sorted sets and store the resulting sorted set in a new key """
         return self._zstore(tr, b'zinterstore', destination, keys, weights, aggregate)
 
@@ -1685,16 +1687,16 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
             weights = [1] * numkeys
 
         return self._query(tr, *
-                [ command, self.encode_from_native(destination), self._encode_int(numkeys) ] +
-                list(map(self.encode_from_native, keys)) +
-                [ b'weights' ] +
-                list(map(self._encode_float, weights)) +
-                [ b'aggregate' ] +
-                [ {
-                        ZAggregate.SUM: b'SUM',
-                        ZAggregate.MIN: b'MIN',
-                        ZAggregate.MAX: b'MAX' }[aggregate]
-                ] )
+        [ command, self.encode_from_native(destination), self._encode_int(numkeys) ] +
+        list(map(self.encode_from_native, keys)) +
+        [ b'weights' ] +
+        list(map(self._encode_float, weights)) +
+        [ b'aggregate' ] +
+        [ {
+              ZAggregate.SUM: b'SUM',
+              ZAggregate.MIN: b'MIN',
+              ZAggregate.MAX: b'MAX' }[aggregate]
+          ] )
 
     @_query_command
     def zcard(self, tr, key:NativeType) -> int:
@@ -1715,7 +1717,7 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
     def zincrby(self, tr, key:NativeType, increment:float, member:NativeType) -> float:
         """ Increment the score of a member in a sorted set """
         return self._query(tr, b'zincrby', self.encode_from_native(key),
-                    self._encode_float(increment), self.encode_from_native(member))
+                           self._encode_float(increment), self.encode_from_native(member))
 
     @_query_command
     def zrem(self, tr, key:NativeType, members:ListOf(NativeType)) -> int:
@@ -1804,7 +1806,7 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
     # (subscribe, unsubscribe, etc... should be called through the Subscription class.)
 
     @_command
-    def start_subscribe(self, tr, *a) -> 'Subscription':
+    def start_subscribe(self, tr, *a, pingpong=False) -> 'Subscription':
         """
         Start a pubsub listener.
 
@@ -1829,7 +1831,7 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
         if self.in_use:
             raise Error('Cannot start pubsub listener when a protocol is in use.')
 
-        subscription = Subscription(self)
+        subscription = Subscription(self, pingpong)
 
         self._in_pubsub = True
         self._subscription = subscription
@@ -1858,6 +1860,11 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
         """ Stop listening for messages posted to channels matching the given patterns """
         self._pubsub_patterns -= set(patterns)
         return self._pubsub_method('punsubscribe', patterns)
+
+    @_command
+    def _pingpong(self, tr) -> NoneType:
+        """ pingpong check """
+        return self._pubsub_method('ping', '')
 
     @asyncio.coroutine
     def _pubsub_method(self, method, params):
@@ -1889,7 +1896,7 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
         to patterns).
         """
         return self._query(tr, b'pubsub', b'channels',
-                    (self.encode_from_native(pattern) if pattern else b'*'))
+                           (self.encode_from_native(pattern) if pattern else b'*'))
 
     @_query_command
     def pubsub_numsub(self, tr, channels:ListOf(NativeType)) -> DictReply:
@@ -1952,10 +1959,10 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
         """ Delete all the keys of the currently selected DB. This command never fails. """
         return self._query(tr, b'flushdb')
 
-#    @_query_command
-#    def object(self, subcommand, args):
-#        """ Inspect the internals of Redis objects """
-#        raise NotImplementedError
+    #    @_query_command
+    #    def object(self, subcommand, args):
+    #        """ Inspect the internals of Redis objects """
+    #        raise NotImplementedError
 
     @_query_command
     def type(self, tr, key:NativeType) -> StatusReply:
@@ -1966,7 +1973,7 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
     def config_set(self, tr, parameter:str, value:str) -> StatusReply:
         """ Set a configuration parameter to the given value """
         return self._query(tr, b'config', b'set', self.encode_from_native(parameter),
-                        self.encode_from_native(value))
+                           self.encode_from_native(value))
 
     @_query_command
     def config_get(self, tr, parameter:str) -> ConfigPairReply:
@@ -2066,8 +2073,8 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
     @_query_command
     @asyncio.coroutine
     def evalsha(self, tr, sha:str,
-                        keys:(ListOf(NativeType), NoneType)=None,
-                        args:(ListOf(NativeType), NoneType)=None) -> EvalScriptReply:
+                keys:(ListOf(NativeType), NoneType)=None,
+                args:(ListOf(NativeType), NoneType)=None) -> EvalScriptReply:
         """
         Evaluates a script cached on the server side by its SHA1 digest.
         Scripts are cached on the server side using the SCRIPT LOAD command.
@@ -2082,8 +2089,8 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
 
         try:
             result = yield from self._query(tr, b'evalsha', sha.encode('ascii'),
-                        self._encode_int(len(keys)),
-                        *map(self.encode_from_native, keys + args))
+                                            self._encode_int(len(keys)),
+                                            *map(self.encode_from_native, keys + args))
 
             return result
         except ErrorReply:
@@ -2143,8 +2150,8 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
         match = b'*' if match is None else self.encode_from_native(match)
 
         return self._query(tr, b'scan', self._encode_int(cursor),
-                    b'match', match,
-                    b'count', self._encode_int(count))
+                           b'match', match,
+                           b'count', self._encode_int(count))
 
     @_command
     def sscan(self, tr, key:NativeType, match:(NativeType,NoneType)=None) -> SetCursor:
@@ -2194,9 +2201,9 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
         match = b'*' if match is None else self.encode_from_native(match)
 
         return self._query(tr, verb, self.encode_from_native(key),
-                self._encode_int(cursor),
-                b'match', match,
-                b'count', self._encode_int(count))
+                           self._encode_int(cursor),
+                           b'match', match,
+                           b'count', self._encode_int(count))
 
     # Transaction
     @_command
@@ -2267,7 +2274,7 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
         # Call watch
         if watch is not None:
             yield from self._watch(tr, watch)
-#        yield from asyncio.sleep(.015)
+        #        yield from asyncio.sleep(.015)
 
         # Call multi
         result = yield from self._query(tr, b'multi', _bypass=True)
@@ -2422,9 +2429,12 @@ class Subscription:
     """
     Pubsub subscription
     """
-    def __init__(self, protocol):
+    def __init__(self, protocol, pingpong=False):
         self.protocol = protocol
         self._messages_queue = Queue(loop=protocol._loop) # Pubsub queue
+        self.init_status = 0
+        if pingpong:
+            ensure_future(self.pingpong(),loop=protocol._loop)
 
     @wraps(RedisProtocol._subscribe)
     def subscribe(self, channels):
@@ -2443,6 +2453,14 @@ class Subscription:
         return self.protocol._punsubscribe(self, patterns)
 
     @asyncio.coroutine
+    def pingpong(self):
+        while True:
+            if self.init_status:
+                logger.debug('ping')
+                yield from self.protocol._pingpong(self)
+            yield from asyncio.sleep(1)
+
+    @asyncio.coroutine
     def next_published(self):
         """
         Coroutine which waits for next pubsub message to be received and
@@ -2450,6 +2468,7 @@ class Subscription:
 
         :returns: instance of :class:`PubSubReply <asyncio_redis.replies.PubSubReply>`
         """
+        self.init_status = 1
         return (yield from self._messages_queue.get())
 
 
