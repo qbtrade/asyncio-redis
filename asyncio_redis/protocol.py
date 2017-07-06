@@ -1806,7 +1806,7 @@ class RedisProtocol(asyncio.Protocol, metaclass=_RedisProtocolMeta):
     # (subscribe, unsubscribe, etc... should be called through the Subscription class.)
 
     @_command
-    def start_subscribe(self, tr, *a, pingpong=False) -> 'Subscription':
+    def start_subscribe(self, tr, *a, pingpong=True) -> 'Subscription':
         """
         Start a pubsub listener.
 
@@ -2458,7 +2458,7 @@ class Subscription:
             if self.init_status:
                 logger.debug('ping')
                 yield from self.protocol._pingpong(self)
-            yield from asyncio.sleep(1)
+            yield from asyncio.sleep(60)
 
     @asyncio.coroutine
     def next_published(self):
