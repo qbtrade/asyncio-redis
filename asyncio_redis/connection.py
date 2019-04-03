@@ -8,10 +8,9 @@ __all__ = ('Connection', )
 
 
 # In Python 3.4.4, `async` was renamed to `ensure_future`.
-try:
-    ensure_future = asyncio.ensure_future
-except AttributeError:
-    ensure_future = asyncio.async
+
+ensure_future = asyncio.ensure_future
+
 
 
 class Connection:
